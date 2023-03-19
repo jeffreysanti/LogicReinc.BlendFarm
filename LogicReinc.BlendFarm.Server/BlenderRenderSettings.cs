@@ -37,6 +37,11 @@ namespace LogicReinc.BlendFarm.Server
         /// </summary>
         public RenderType ComputeUnit { get; set; } = RenderType.CPU;
 
+        // <summary>
+        // Comma separated list of allowed devices for gpu rendering
+        // </summary>
+        public string AllowedDeviceNames { get; set; } = "";
+
         /// <summary>
         /// Denoiser for Blender (None/NLM/OptiX/OpenImageDenoise) Empty or null is seen as inherit
         /// </summary>
@@ -133,6 +138,7 @@ namespace LogicReinc.BlendFarm.Server
                 Height = settings.Height,
                 Samples = settings.Samples,
                 ComputeUnit = settings.RenderType,
+                AllowedDeviceNames = settings.AllowedDeviceNames,
                 Crop = settings.Crop,
                 Denoiser = settings.Denoiser,
                 FPS = settings.FPS,

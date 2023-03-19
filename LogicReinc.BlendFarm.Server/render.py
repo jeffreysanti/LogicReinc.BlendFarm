@@ -35,9 +35,9 @@ if(useContinue):
     print('Continuation enabled\n');
     
 
-def useDevices(type, allowGPU, allowCPU):
+def useDevices(type, allowGPU, allowCPU, allowedDeviceNameList):
     cyclesPref = bpy.context.preferences.addons["cycles"].preferences;
-    
+
     #For older Blender Builds
     if (isPre3):
         cyclesPref.compute_device_type = type
@@ -54,7 +54,9 @@ def useDevices(type, allowGPU, allowCPU):
             devices = opencl_devices;
         for d in devices:
             d.use = (allowCPU and d.type == "CPU") or (allowGPU and d.type != "CPU");
-            print(type + " Device:", d["name"], d["use"]);
+            if len(allowedDeviceNameList) > 0 and allowedDeviceNameList[0] != '' and not (d.name in allowedDeviceNameList):
+                d.use = False
+            print(type + " Device:", d["name"], " Type:", d["type"], " Use:", d["use"]);
     #For Blender Builds >= 3.0
     else:
         cyclesPref.compute_device_type = type
@@ -79,7 +81,9 @@ def useDevices(type, allowGPU, allowCPU):
             raise Exception("No devices found for type " + type + ", Unsupported hardware or platform?");
         for d in devices:
             d.use = (allowCPU and d.type == "CPU") or (allowGPU and d.type != "CPU");
-            print(type + " Device:", d["name"], d["use"]);
+            if len(allowedDeviceNameList) > 0 and allowedDeviceNameList[0] != '' and not (d.name in allowedDeviceNameList):
+                d.use = False
+            print(type + " Device:", d["name"], " Type:", d["type"], " Use:", d["use"]);
 
 #Renders provided settings with id to path
 def renderWithSettings(renderSettings, id, path):
@@ -136,6 +140,7 @@ def renderWithSettings(renderSettings, id, path):
         #Render Device
         renderType = int(renderSettings["ComputeUnit"]);
         engine = int(renderSettings["Engine"]);
+        allowedDeviceNameList = renderSettings["AllowedDeviceNames"].split(",")
 
         if(engine == 2): #Optix
             optixGPU = renderType == 1 or renderType == 3 or renderType == 11 or renderType == 12; #CUDA or CUDA_GPU_ONLY
@@ -144,57 +149,57 @@ def renderWithSettings(renderSettings, id, path):
                 scn.cycles.device = "CPU";
             else:
                 scn.cycles.device = "GPU";
-            useDevices("OPTIX", optixGPU, optixCPU);
+            useDevices("OPTIX", optixGPU, optixCPU, allowedDeviceNameList);
         else: #Cycles/Eevee
             if renderType == 0: #CPU
                 scn.cycles.device = "CPU";
                 print("Use CPU");
             elif renderType == 1: #Cuda
-                useDevices("CUDA", True, True);
+                useDevices("CUDA", True, True, allowedDeviceNameList);
                 scn.cycles.device = "GPU";
                 print("Use Cuda");
             elif renderType == 2: #OpenCL
-                useDevices("OPENCL", True, True);
+                useDevices("OPENCL", True, True, allowedDeviceNameList);
                 scn.cycles.device = "GPU";
                 print("Use OpenCL");
             elif renderType == 3: #Cuda (GPU Only)
-                useDevices("CUDA", True, False);
+                useDevices("CUDA", True, False, allowedDeviceNameList);
                 scn.cycles.device = 'GPU';
                 print("Use Cuda (GPU)");
             elif renderType == 4: #OpenCL (GPU Only)
-                useDevices("OPENCL", True, False);
+                useDevices("OPENCL", True, False, allowedDeviceNameList);
                 scn.cycles.device = 'GPU';
                 print("Use OpenCL (GPU)");
             elif renderType == 5: #HIP
-                useDevices("HIP", True, False);
+                useDevices("HIP", True, False, allowedDeviceNameList);
                 scn.cycles.device = 'GPU';
                 print("Use HIP");
             elif renderType == 6: #HIP (GPU Only)
-                useDevices("HIP", True, True);
+                useDevices("HIP", True, True, allowedDeviceNameList);
                 scn.cycles.device = 'GPU';
                 print("Use HIP (GPU)");
             elif renderType == 7: #METAL
-                useDevices("METAL", True, True);
+                useDevices("METAL", True, True, allowedDeviceNameList);
                 scn.cycles.device = 'GPU';
                 print("Use METAL");
             elif renderType == 8: #METAL (GPU Only)
-                useDevices("METAL", True, False);
+                useDevices("METAL", True, False, allowedDeviceNameList);
                 scn.cycles.device = 'GPU';
                 print("Use METAL (GPU)");
             elif renderType == 9: #ONEAPI
-                useDevices("ONEAPI", True, True);
+                useDevices("ONEAPI", True, True, allowedDeviceNameList);
                 scn.cycles.device = 'GPU';
                 print("Use ONEAPI");
             elif renderType == 10: #ONEAPI (GPU Only)
-                useDevices("ONEAPI", True, False);
+                useDevices("ONEAPI", True, False, allowedDeviceNameList);
                 scn.cycles.device = 'GPU';
                 print("Use ONEAPI (GPU)");
             elif renderType == 11: #OptiX
-                useDevices("OPTIX", True, True);
+                useDevices("OPTIX", True, True, allowedDeviceNameList);
                 scn.cycles.device = "GPU";
                 print("Use OptiX");
             elif renderType == 12: #OptiX (GPU Only)
-                useDevices("OPTIX", True, False);
+                useDevices("OPTIX", True, False, allowedDeviceNameList);
                 scn.cycles.device = "GPU";
                 print("Use OptiX (GPU)");
         

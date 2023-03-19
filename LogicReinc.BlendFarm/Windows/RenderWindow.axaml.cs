@@ -113,6 +113,7 @@ namespace LogicReinc.BlendFarm.Windows
         private ListBox _nodeList = null;
         private Image _image = null;
         private ProgressBar _imageProgress = null;
+        public TextBlock _renderProgressText = null;
         private TextBlock _lastRenderTime = null;
         private ComboBox _selectStrategy = null;
         private ComboBox _selectOrder = null;
@@ -234,6 +235,7 @@ namespace LogicReinc.BlendFarm.Windows
             _nodeList = this.Find<ListBox>("listNodes");
             _image = this.Find<Image>("render");
             _imageProgress = this.Find<ProgressBar>("renderProgress");
+            _renderProgressText = this.Find<TextBlock>("renderProgressText");
             _lastRenderTime = this.Find<TextBlock>("lastRenderTime");
             _selectStrategy = this.Find<ComboBox>("selectStrategy");
             _selectOrder = this.Find<ComboBox>("selectOrder");
@@ -251,6 +253,7 @@ namespace LogicReinc.BlendFarm.Windows
                 if (b.Key == Avalonia.Input.Key.Delete)
                 {
                     CurrentProject.LastImage = new System.Drawing.Bitmap(1, 1).ToAvaloniaBitmap();
+                    _renderProgressText.Text = "";
                     RefreshCurrentProject();
                     _lastRenderTime.Text = "";
                 }
@@ -464,6 +467,7 @@ namespace LogicReinc.BlendFarm.Windows
                         await Dispatcher.UIThread.InvokeAsync(() =>
                         {
                             currentProject.LastImage = updated.ToAvaloniaBitmap();
+                            _renderProgressText.Text = "";
                             if (CurrentProject == currentProject)
                                 RaisePropertyChanged(CurrentProjectProperty, null, CurrentProject);
 
@@ -498,6 +502,7 @@ namespace LogicReinc.BlendFarm.Windows
                         if (finalImage != null)
                         {
                             currentProject.LastImage = finalImage.ToAvaloniaBitmap();
+                            _renderProgressText.Text = "";
                             if(currentProject == CurrentProject)
                                 RaisePropertyChanged(CurrentProjectProperty, null, CurrentProject);
 
@@ -591,14 +596,24 @@ namespace LogicReinc.BlendFarm.Windows
                         //Apply image to canvas
                         await Dispatcher.UIThread.InvokeAsync(() =>
                         {
+                            string time = watch.Elapsed.ToString();
+                            long ticksPerFrame = watch.Elapsed.Ticks / (1 + task.Frame - currentProject.FrameStart);
+                            long remainingTicks = (CurrentProject.FrameEnd - task.Frame) * ticksPerFrame;
+                            string remainingTime = (new TimeSpan(remainingTicks)).ToString();
                             try
                             {
                                 using (System.Drawing.Image img = ImageConverter.Convert(frame.Image, task.Parent.Settings.RenderFormat))
                                 {
                                     if (img != null)
+                                    {
+                                        _renderProgressText.Text = "Frame " + task.Frame.ToString() + " (" + time + ") Remaining: " + remainingTime;
                                         currentProject.LastImage = img.ToAvaloniaBitmap();
+                                    }
                                     else
+                                    {
+                                        _renderProgressText.Text = "";
                                         currentProject.LastImage = Statics.NoPreviewImage;
+                                    }
                                 }
                                 if (currentProject == CurrentProject)
                                     RaisePropertyChanged(CurrentProjectProperty, null, CurrentProject);
@@ -607,7 +622,7 @@ namespace LogicReinc.BlendFarm.Windows
                             {
                                 _ = MessageWindow.Show(this, "GUI Exception", "An error occured trying to load animation Bitmap in GUI.\n(Animation frame should still be saved)");
                             }
-                            _lastRenderTime.Text = watch.Elapsed.ToString();
+                            _lastRenderTime.Text = time;
                         });
                     });
                     currentProject.SetRenderTask(rtask);

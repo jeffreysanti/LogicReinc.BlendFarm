@@ -77,7 +77,9 @@ namespace LogicReinc.BlendFarm.Shared.Communication
         public void HandlePacket(string header, BinaryReader reader)
         {
             if (!BlendFarmMessage.HasPackageType(header))
-                return;
+            {
+                throw new InvalidDataException("Received Unrecognized header " + header);
+            }
 
             Type packetType = BlendFarmMessage.GetPackageType(header);
             BlendFarmMessage req = null;

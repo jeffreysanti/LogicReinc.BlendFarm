@@ -74,12 +74,15 @@
           +
         </Button>
       </Grid>
-      <Image x:Name="render"
-            
-            Source="{Binding CurrentProject.LastBitmap}"
-            Grid.Row="1"
-            Grid.Column="0">
-      </Image>
+      <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="10,*" ColumnDefinitions="*">
+        <TextBlock Grid.Row="0" Grid.Column="0" x:Name="renderProgressText" 
+            Width="400" HorizontalAlignment="Left" Foreground="#AAAAAA" FontWeight="Bold" />
+        <Image x:Name="render"
+              Source="{Binding CurrentProject.LastBitmap}"
+              Grid.Row="1"
+              Grid.Column="0">
+        </Image>
+      </Grid>
       <ProgressBar
             IsVisible="{Binding CurrentProject.IsRendering}"
             x:Name="renderProgress"

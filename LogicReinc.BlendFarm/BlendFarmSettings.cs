@@ -79,6 +79,7 @@ namespace LogicReinc.BlendFarm
 
             public RenderType RenderType { get; set; } = RenderType.CPU;
             public double Performance { get; set; }
+            public string AllowedDeviceNames { get; set; }
         }
 
         /// <summary>

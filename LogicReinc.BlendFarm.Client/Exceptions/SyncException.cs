@@ -8,7 +8,8 @@ namespace LogicReinc.BlendFarm.Client.Exceptions
     {
         public SyncException(string msg) : base(msg)
         {
-
+            Console.WriteLine("SyncException:" + msg);
+            Console.WriteLine(StackTrace.ToString());
         }
     }
 }

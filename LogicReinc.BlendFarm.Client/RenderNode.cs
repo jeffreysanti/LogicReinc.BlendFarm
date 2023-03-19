@@ -73,6 +73,11 @@ namespace LogicReinc.BlendFarm.Client
         /// </summary>
         public RenderType RenderType { get; set; } = RenderType.CPU;
 
+        // <summary>
+        // Comma separated list of allowed devices for gpu rendering
+        // </summary>
+        public string AllowedDeviceNames { get; set; } = "";
+
         //State
         /// <summary>
         /// If node is not doing anything

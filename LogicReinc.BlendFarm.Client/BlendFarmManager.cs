@@ -193,7 +193,7 @@ namespace LogicReinc.BlendFarm.Client
             return Nodes.FirstOrDefault(x => x.Address == address);
         }
 
-        public RenderNode AddNode(string name, string address, RenderType type = RenderType.CPU) => AddNode(new RenderNode() { Name = name, Address = address, RenderType = type });
+        public RenderNode AddNode(string name, string address, RenderType type = RenderType.CPU, string allowedDeviceNames = "") => AddNode(new RenderNode() { Name = name, Address = address, RenderType = type, AllowedDeviceNames = allowedDeviceNames });
         public RenderNode AddNode(RenderNode node)
         {
             RenderNode existing = GetNodeByName(node.Name);

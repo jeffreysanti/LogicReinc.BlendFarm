@@ -63,6 +63,11 @@ namespace LogicReinc.BlendFarm.Shared
         /// </summary>
         public RenderType RenderType { get; set; }
 
+        // <summary>
+        // Comma separated list of allowed devices for gpu rendering
+        // </summary>
+        public string AllowedDeviceNames { get; set; } = "";
+
         /// <summary>
         /// Denoiser for Blender (None/NLM/OptiX/OpenImageDenoise) Empty or null is seen as inherit
         /// </summary>

@@ -384,6 +384,7 @@ namespace LogicReinc.BlendFarm.Shared
 
                 RenderBatchRequest req = RenderSubTask.GetRenderBatchRequest(ID, tasks);
                 req.Settings.ForEach(x => x.RenderType = node.RenderType);
+                req.Settings.ForEach(x => x.AllowedDeviceNames = node.AllowedDeviceNames);
                 RenderBatchResponse resp = await node.RenderBatch(req);
 
                 if (resp == null)
@@ -428,6 +429,7 @@ namespace LogicReinc.BlendFarm.Shared
             {
 
                 req.Settings.RenderType = node.RenderType;
+                req.Settings.AllowedDeviceNames = node.AllowedDeviceNames;
 
                 RenderResponse resp = await node.Render(req);
 

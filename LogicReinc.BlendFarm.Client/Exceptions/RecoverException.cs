@@ -8,7 +8,8 @@ namespace LogicReinc.BlendFarm.Client.Exceptions
     {
         public RecoverException(string msg) : base(msg)
         {
-
+            Console.WriteLine("RecoverException:" + msg);
+            Console.WriteLine(StackTrace.ToString());
         }
     }
 }

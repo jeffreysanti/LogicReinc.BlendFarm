@@ -26,6 +26,10 @@
         <ComboBox x:Name="selectRenderType" Margin="10,0,0,0" Items="{Binding RenderTypes}" FontSize="15"></ComboBox>
       </StackPanel>
       <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
+        <TextBlock Margin="5" Width="120" TextAlignment="Right" FontSize="15" Text="Device Whitelist:" HorizontalAlignment="Right" />
+        <TextBox Width="130" Watermark="Comma Separated" Text="{Binding Node.AllowedDeviceNames}"></TextBox>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
         <TextBlock Margin="5" Width="120" TextAlignment="Right" FontSize="15" Text="Performance:" HorizontalAlignment="Right" ToolTip.Tip="Used when Auto-Performance disabled, use cores when zero or below" />
         <NumericUpDown Margin="10,0,0,0" FontSize="15" Value="{Binding Node.Performance}" Increment="0.1"></NumericUpDown>
       </StackPanel>

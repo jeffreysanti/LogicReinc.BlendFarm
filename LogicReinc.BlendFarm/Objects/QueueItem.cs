@@ -83,6 +83,7 @@ namespace LogicReinc.BlendFarm.Objects
                         Dispatcher.UIThread.InvokeAsync(() =>
                         {
                             Project.LastImage = bitmap.ToAvaloniaBitmap();
+                            window._renderProgressText.Text = "Single Frame";
                             window.RefreshCurrentProject();
                             RefreshInfo();
                         });
@@ -118,6 +119,7 @@ namespace LogicReinc.BlendFarm.Objects
                     Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         Project.LastImage = final.ToAvaloniaBitmap();
+                        window._renderProgressText.Text= "Single Frame";
 
                         Project.SetRenderTask(null);
                         RefreshInfo();
@@ -155,6 +157,14 @@ namespace LogicReinc.BlendFarm.Objects
                             }
                             else
                                 Project.LastImage = Statics.NoPreviewImage;
+
+                            Dispatcher.UIThread.InvokeAsync(() =>
+                            {
+                                if (image != null)
+                                    window._renderProgressText.Text = "Frame " + task.Frame.ToString();
+                                else
+                                    window._renderProgressText.Text= "";
+                            });
                         }
 
                         //Remove bytes
